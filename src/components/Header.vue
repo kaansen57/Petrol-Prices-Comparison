@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+    <nav class="navbar navbar-expand-lg navbar-dark" :class="bg" >
       <a class="navbar-brand" href="/"> Petrol Comparison</a>
       <button
         class="navbar-toggler"
@@ -26,7 +26,23 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props:["petrol"],
+  data(){
+    return{
+      bg : "bg-dark",
+    }
+  },
+  watch:{
+    petrol(newValue, oldValue){
+        if(newValue === "PO"){
+          this.bg = "bg-danger";
+        }else if(newValue === "OPET"){
+          this.bg = "bg-primary";
+        }
+    } 
+  }
+};
 </script>
 
 <style scoped>

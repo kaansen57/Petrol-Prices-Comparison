@@ -9,6 +9,12 @@ export default new Vuex.Store({
   mutations: {
   },
   actions: {
+    petrolOfisi(){
+
+    },
+    opet(){
+      
+    }
   },
   modules: {
   }
