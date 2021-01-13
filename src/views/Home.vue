@@ -114,16 +114,17 @@ export default {
       this.selectedPetrol = "Seçiniz";
     },
     selectedPetrol(newValue, oldValue) {
+      this.titlePrice = [];
       if (newValue === "PO") {
-         let citys = this.turkishToEnglish(this.iller[this.cityNo].il);
-         let district  = this.turkishToEnglish(this.selectedDistrict) 
+        let citys = this.turkishToEnglish(this.iller[this.cityNo].il);
+        let district = this.turkishToEnglish(this.selectedDistrict);
         const options = {
           url: `https://www.petrolofisi.com.tr/posvc/fiyat/guncel?il=${citys.toUpperCase()}&Ilce=${district.toUpperCase()}`,
           method: "GET",
         };
+
         axios(options)
           .then((res) => {
-            this.titlePrice = [];
             Object.keys(res.data).forEach((key) => {
               if (key === "AktarimTarihi") {
               } else {
@@ -144,8 +145,7 @@ export default {
         axios(options)
           .then((res) => {
             console.log(res);
-            
-            this.titlePrice = [];
+
             res.data.data
               .filter((district) =>
                 district._IlceAd.includes(this.selectedDistrict.toUpperCase())
@@ -161,8 +161,6 @@ export default {
                   { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti }
                 );
               });
-
-            console.log(this.titlePrice);
           })
           .catch((err) => {
             console.log("Connected Failed");

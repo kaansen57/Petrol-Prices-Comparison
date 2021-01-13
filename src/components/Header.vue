@@ -17,8 +17,9 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/">Pompa Fiyatları</a>
           </li>
+         
         </ul>
       </div>
     </nav>
@@ -38,7 +39,7 @@ export default {
         if(newValue === "PO"){
           this.bg = "bg-danger";
         }else if(newValue === "OPET"){
-          this.bg = "bg-primary";
+          this.bg = "opet";
         }
     } 
   }
@@ -46,4 +47,7 @@ export default {
 </script>
 
 <style scoped>
+.opet{
+  background-color:#005295;
+}
 </style>

@@ -16,9 +16,7 @@ export default {
 };
 </script>
 <style scoped>
-.container-fluid{
-  padding:0 !important;
+.container-fluid {
+  padding: 0 !important;
 }
-
-
 </style>
