@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid">
-    <Home />
+      <Home />
   </div>
 </template>
 
@@ -15,8 +15,12 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style >
+body {
+  background-color : lightgray; 
+}
 .container-fluid {
   padding: 0 !important;
 }
+
 </style>

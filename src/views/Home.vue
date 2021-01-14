@@ -174,7 +174,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style >
+
 .custom-margin {
   margin-top: 3rem;
 }
