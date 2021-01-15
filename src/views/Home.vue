@@ -30,7 +30,6 @@
           </option>
         </select>
       </div>
-
       <div class="col-md-4 custom-margin">
         <select class="custom-select" id="input2" v-model="selectedPetrol">
           <option selected disabled>Seçiniz</option>
@@ -39,15 +38,20 @@
         </select>
       </div>
     </div>
-    <div class="row mx-auto">
+    <transition-group
+      enter-active-class="animate__animated animate__bounceInLeft"
+      leave-active-class="animate__animated animate__bounceOutRight"
+      appear
+    >
       <Card
-        :title="fiyat.title"
-        :price="fiyat.price"
+        class="float-left"
+        :title="item.title"
+        :price="item.price"
         :petrol="selectedPetrol"
-        v-for="(fiyat, i) in titlePrice"
+        v-for="(item, i) in titlePrice"
         :key="i"
       ></Card>
-    </div>
+    </transition-group>
   </div>
 </template>
 
@@ -115,6 +119,7 @@ export default {
     },
     selectedPetrol(newValue, oldValue) {
       this.titlePrice = [];
+
       if (newValue === "PO") {
         let citys = this.turkishToEnglish(this.iller[this.cityNo].il);
         let district = this.turkishToEnglish(this.selectedDistrict);
@@ -128,7 +133,9 @@ export default {
             Object.keys(res.data).forEach((key) => {
               if (key === "AktarimTarihi") {
               } else {
-                this.titlePrice.push({ title: key, price: res.data[key] });
+                setTimeout(() => {
+                  this.titlePrice.push({ title: key, price: res.data[key] });
+                }, 600);
               }
             });
           })
@@ -151,15 +158,20 @@ export default {
                 district._IlceAd.includes(this.selectedDistrict.toUpperCase())
               )
               .forEach((x) => {
-                this.titlePrice.push(
-                  { title: "Kurşunsuz 95", price: x._Kursunsuz95 },
-                  { title: "Motorin", price: x._Motorin },
-                  { title: "Motorin Eco Force", price: x._MotorinEcoForce },
-                  { title: "Fuel Oil", price: x._FuelOil },
-                  { title: "Yüksek Kükürtlü Oil", price: x._YuksekKukurtluOil },
-                  { title: "Gaz Yağı", price: x._GazYagi },
-                  { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti }
-                );
+                setTimeout(() => {
+                  this.titlePrice.push(
+                    { title: "Kurşunsuz 95", price: x._Kursunsuz95 },
+                    { title: "Motorin", price: x._Motorin },
+                    { title: "Motorin Eco Force", price: x._MotorinEcoForce },
+                    { title: "Fuel Oil", price: x._FuelOil },
+                    {
+                      title: "Yüksek Kükürtlü Oil",
+                      price: x._YuksekKukurtluOil,
+                    },
+                    { title: "Gaz Yağı", price: x._GazYagi },
+                    { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti }
+                  );
+                }, 600);
               });
           })
           .catch((err) => {
@@ -175,7 +187,6 @@ export default {
 </script>
 
 <style >
-
 .custom-margin {
   margin-top: 3rem;
 }

@@ -1,41 +1,51 @@
 <template >
-  <div class="col-md-4 mt-5 mb-4 mx-auto">
-    <div class="ks__card text-center p-4" v-if="petrol === 'PO'">
-      <div class="ks__card--side ks__card--front po">
-        <div class="card-body">
-          <div class="card-title">
-            <h3 class="mt-5 ml-5 text-white">
-              Yakıt Türü : <b>{{ title }}</b>
-            </h3>
+    <div class="col-md-4 mt-5 ">
+      <div class="ks__card text-center p-4" v-if="petrol === 'PO'" :key="1">
+        <div class="ks__card--side ks__card--front po">
+          <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-10 text-center">
+              <div class="card-body">
+                <div class="card-title">
+                  <h3 class="mt-5 ml-5 text-white">
+                    Yakıt Türü : <b>{{ title }}</b>
+                  </h3>
+                </div>
+                <h4 class="text-white">
+                  Fiyat : <b>{{ price }}</b>
+                </h4>
+              </div>
+            </div>
           </div>
-          <h4 class="text-white">
-            Fiyat : <b>{{ price }}</b>
-          </h4>
         </div>
+
+        <!-- card back -->
+        <div class="ks__card--side ks__card--back back-po"></div>
       </div>
 
-      <!-- card back -->
-      <div class="ks__card--side ks__card--back back-po"></div>
-    </div>
-
-    <div class="ks__card text-center p-4" v-if="petrol === 'OPET'">
-      <div class="ks__card--side ks__card--front opet">
-        <div class="card-body">
-          <div class="card-title">
-            <h3 class="mt-5 ml-5 text-white">
-              Yakıt Türü : <b>{{ title }}</b>
-            </h3>
+      <div class="ks__card text-center p-4" v-if="petrol === 'OPET'" :key="2">
+        <div class="ks__card--side ks__card--front opet">
+          <div class="row">
+            <div class="col-md-12 text-center">
+              <div class="card-body">
+                <div class="card-title">
+                  <h3 class="mt-5 ml-5 text-white">
+                    Yakıt Türü : <b>{{ title }}</b>
+                  </h3>
+                </div>
+                <h4 class="text-white">
+                  Fiyat : <b>{{ price }}</b>
+                </h4>
+              </div>
+            </div>
           </div>
-          <h4 class="text-white">
-            Fiyat : <b>{{ price }}</b>
-          </h4>
         </div>
-      </div>
 
-      <!-- card back -->
-      <div class="ks__card--side ks__card--back back-opet"></div>
+        <!-- card back -->
+        <div class="ks__card--side ks__card--back back-opet"></div>
+      </div>
     </div>
-  </div>
+
 </template>
 
 
@@ -52,14 +62,14 @@ export default {
 
 <style scoped>
 .ks__card {
-  height: 13rem;
+  height: 15rem;
   perspective: 3rem;
   -webkit-perspective: 150rem;
   -moz-perspective: 150rem;
   position: relative;
 }
 .ks__card--side {
-  height: 13rem;
+  height: 15rem;
   transition: all 0.8s ease;
   -webkit-transition: all 0.8s ease;
   position: absolute;
