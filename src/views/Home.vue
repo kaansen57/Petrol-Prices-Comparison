@@ -38,26 +38,22 @@
         </select>
       </div>
     </div>
-    <transition-group
-      enter-active-class="animate__animated animate__bounceInLeft"
-      leave-active-class="animate__animated animate__bounceOutRight"
-      appear
-    >
-      <Card
+      <Card ></Card>
+
+      <!-- <Card
         class="float-left"
-        :title="item.title"
-        :price="item.price"
-        :petrol="selectedPetrol"
-        v-for="(item, i) in titlePrice"
+        :cardData="item"
+         v-for="(item, i) in titlePrices"
         :key="i"
-      ></Card>
-    </transition-group>
+      ></Card> -->
+
   </div>
 </template>
 
 <script>
 import cityJSON from "@/il-ilce.json";
 import axios from "axios";
+import {mapGetters} from 'vuex'
 import Header from "@/components/Header";
 import Card from "@/components/Card";
 
@@ -102,47 +98,32 @@ export default {
         .replace(/ç/gim, "c");
     },
   },
+  computed:{
+    ...mapGetters(['titlePrices','selectedPetrols'])
+  },
   watch: {
     cityNo(newValue, oldValue) {
       this.selectedDistrict = "Seçiniz";
       this.selectedPetrol = "Seçiniz";
       this.districts = [];
-      this.titlePrice = [];
-
       for (let i of this.iller[newValue].ilceleri) {
         this.districts.push(i);
       }
     },
     selectedDistrict() {
-      this.titlePrice = [];
       this.selectedPetrol = "Seçiniz";
     },
     selectedPetrol(newValue, oldValue) {
-      this.titlePrice = [];
+
+      this.$store.commit('titlePriceSet',false) //cardDatasını temizlemek için mutationa false gönder.
+      this.$store.commit("selectedPetrolSet",newValue)
 
       if (newValue === "PO") {
-        let citys = this.turkishToEnglish(this.iller[this.cityNo].il);
-        let district = this.turkishToEnglish(this.selectedDistrict);
-        const options = {
-          url: `https://www.petrolofisi.com.tr/posvc/fiyat/guncel?il=${citys.toUpperCase()}&Ilce=${district.toUpperCase()}`,
-          method: "GET",
-        };
-
-        axios(options)
-          .then((res) => {
-            Object.keys(res.data).forEach((key) => {
-              if (key === "AktarimTarihi") {
-              } else {
-                setTimeout(() => {
-                  this.titlePrice.push({ title: key, price: res.data[key] });
-                }, 600);
-              }
-            });
-          })
-          .catch((err) => {
-            console.error("Connected Failed");
-          });
-      } else if (newValue === "OPET") {
+          this.$store.commit("citySet",this.turkishToEnglish(this.iller[this.cityNo].il.toUpperCase()));
+          this.$store.commit("districtSet",this.turkishToEnglish(this.selectedDistrict.toUpperCase()));
+          this.$store.dispatch("petrolOfisiAction")
+      } 
+      else if (newValue === "OPET") {
         const options = {
           url: `https://www.opet.com.tr/AjaxProcess/GetFuelPricesList?Cityname=${this.iller[
             this.cityNo
@@ -158,8 +139,7 @@ export default {
                 district._IlceAd.includes(this.selectedDistrict.toUpperCase())
               )
               .forEach((x) => {
-                setTimeout(() => {
-                  this.titlePrice.push(
+                this.$store.commit("titlePriceSet",
                     { title: "Kurşunsuz 95", price: x._Kursunsuz95 },
                     { title: "Motorin", price: x._Motorin },
                     { title: "Motorin Eco Force", price: x._MotorinEcoForce },
@@ -169,9 +149,20 @@ export default {
                       price: x._YuksekKukurtluOil,
                     },
                     { title: "Gaz Yağı", price: x._GazYagi },
-                    { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti }
-                  );
-                }, 600);
+                    { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti })
+
+                  // this.titlePrice.push( { title: "Kurşunsuz 95", price: x._Kursunsuz95 },
+                  //   { title: "Motorin", price: x._Motorin },
+                  //   { title: "Motorin Eco Force", price: x._MotorinEcoForce },
+                  //   { title: "Fuel Oil", price: x._FuelOil },
+                  //   {
+                  //     title: "Yüksek Kükürtlü Oil",
+                  //     price: x._YuksekKukurtluOil,
+                  //   },
+                  //   { title: "Gaz Yağı", price: x._GazYagi },
+                  //   { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti } );
+                  
+                  
               });
           })
           .catch((err) => {

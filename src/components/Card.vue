@@ -1,61 +1,72 @@
 <template >
-    <div class="col-md-4 mt-5 ">
-      <div class="ks__card text-center p-4" v-if="petrol === 'PO'" :key="1">
-        <div class="ks__card--side ks__card--front po">
-          <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-10 text-center">
-              <div class="card-body">
-                <div class="card-title">
-                  <h3 class="mt-5 ml-5 text-white">
-                    Yakıt Türü : <b>{{ title }}</b>
-                  </h3>
+  <div class="row mx-auto">
+    <div class="col-md-4 mt-5 mb-3" v-for="(item, i) in titlePrices" :key="i">
+      <transition-group
+        enter-active-class="animate__animated animate__bounceInLeft"
+        leave-active-class="animate__animated animate__bounceOutRight"
+        appear
+      >
+        <div v-if="selectedPetrols === 'PO'" :key="1">
+          <div class="ks__card text-center">
+            <div class="ks__card--side ks__card--front po">
+              <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-10 text-center">
+                  <div class="card-body">
+                    <div class="card-title">
+                      <h3 class="mt-5 ml-5 text-white">
+                        Yakıt Türü : <b>{{ item.title }}</b>
+                      </h3>
+                    </div>
+                    <h4 class="text-white">
+                      Fiyat : <b>{{ item.price }}</b>
+                    </h4>
+                  </div>
                 </div>
-                <h4 class="text-white">
-                  Fiyat : <b>{{ price }}</b>
-                </h4>
               </div>
             </div>
+
+            <!-- card back -->
+            <div class="ks__card--side ks__card--back back-po"></div>
           </div>
         </div>
 
-        <!-- card back -->
-        <div class="ks__card--side ks__card--back back-po"></div>
-      </div>
-
-      <div class="ks__card text-center p-4" v-if="petrol === 'OPET'" :key="2">
-        <div class="ks__card--side ks__card--front opet">
-          <div class="row">
-            <div class="col-md-12 text-center">
-              <div class="card-body">
-                <div class="card-title">
-                  <h3 class="mt-5 ml-5 text-white">
-                    Yakıt Türü : <b>{{ title }}</b>
-                  </h3>
+        <div v-if="selectedPetrols === 'OPET'" :key="2">
+          <div class="ks__card text-center">
+            <div class="ks__card--side ks__card--front opet">
+              <div class="row">
+                <div class="col-md-12 text-center">
+                  <div class="card-body">
+                    <div class="card-title">
+                      <h3 class="mt-5 ml-5 text-white">
+                        Yakıt Türü : <b>{{ cardData.title }}</b>
+                      </h3>
+                    </div>
+                    <h4 class="text-white">
+                      Fiyat : <b>{{ cardData.price }}</b>
+                    </h4>
+                  </div>
                 </div>
-                <h4 class="text-white">
-                  Fiyat : <b>{{ price }}</b>
-                </h4>
               </div>
             </div>
+            <!-- card back -->
+            <div class="ks__card--side ks__card--back back-opet"></div>
           </div>
         </div>
-
-        <!-- card back -->
-        <div class="ks__card--side ks__card--back back-opet"></div>
-      </div>
+      </transition-group>
     </div>
-
+  </div>
 </template>
-
-
-
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "Card",
-  props: ["title", "price", "petrol"],
+  props: ["cardData"],
   data() {
     return {};
+  },
+  computed: {
+    ...mapGetters(["titlePrices", "selectedPetrols", "citys", "districts"]),
   },
 };
 </script>
