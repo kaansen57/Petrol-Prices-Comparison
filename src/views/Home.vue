@@ -2,6 +2,11 @@
   <div>
     <Header :petrol="selectedPetrol" />
     <div class="row mx-auto">
+       <div class="col-md-12 text-center mt-4" >
+          <h1 :class="textBg"> <b> Akaryakıt Fiyat Karşılaştırması </b> </h1>
+       </div>
+     </div>
+    <div class="row mx-auto">
       <div class="col-md-4 custom-margin">
         <div class="input-group">
           <select
@@ -42,13 +47,16 @@
       enter-active-class="animate__animated animate__bounceInLeft"
       leave-active-class="animate__animated animate__bounceOutRight"
       appear
+      
     >
+   
       <Card
         class="float-left"
         :cardData="item"
         v-for="(item, i) in titlePrices"
         :key="i"
       ></Card>
+   
     </transition-group>
   </div>
 </template>
@@ -69,14 +77,13 @@ export default {
       selectedDistrict: "Seçiniz",
       cityNo: -1,
       districts: [],
-      po: [],
-      opet: [],
-      titlePrice: [],
+      textBg:"text-dark"
     };
   },
   components: {
     Header,
     Card,
+ 
   },
   methods: {
     ilId(event) {
@@ -100,6 +107,16 @@ export default {
         .replace(/ö/gim, "o")
         .replace(/ç/gim, "c");
     },
+    poVuexConfig(){
+      this.$store.commit("citySet", this.turkishToEnglish(this.iller[this.cityNo].il.toUpperCase()));
+        this.$store.commit("districtSet", this.turkishToEnglish(this.selectedDistrict.toUpperCase()));
+        this.$store.dispatch("petrolOfisiAction");
+    },
+    opetVuexConfig(){
+       this.$store.commit("citySet", this.iller[this.cityNo].il.toUpperCase());
+        this.$store.commit("districtSet", this.selectedDistrict.toUpperCase());
+        this.$store.dispatch("opet");
+    }
   },
   computed: {
     ...mapGetters(["titlePrices", "selectedPetrols"]),
@@ -116,27 +133,22 @@ export default {
     selectedDistrict() {
       this.selectedPetrol = "Seçiniz";
     },
-    selectedPetrol(newValue, oldValue) {
+    selectedPetrol(newValue) {
       this.$store.commit("titlePriceSet", false); //cardDatasını temizlemek için mutationa false gönder.
       this.$store.commit("selectedPetrolSet", newValue);
 
       if (newValue === "PO") {
-        this.$store.commit(
-          "citySet",
-          this.turkishToEnglish(this.iller[this.cityNo].il.toUpperCase())
-        );
-        this.$store.commit(
-          "districtSet",
-          this.turkishToEnglish(this.selectedDistrict.toUpperCase())
-        );
-        this.$store.dispatch("petrolOfisiAction");
+        this.textBg = "text-danger"
+        setTimeout(() => {
+           this.poVuexConfig();
+        },700);
+        
       } else if (newValue === "OPET") {
-        console.log("opetegirdi");
-        this.$store.commit("citySet", this.iller[this.cityNo].il.toUpperCase());
-        this.$store.commit("districtSet", this.selectedDistrict.toUpperCase());
-        this.$store.dispatch("opet");
+         this.textBg = "opet"
+        this.opetVuexConfig();
       }
     },
+  
   },
   created() {
     this.iller = cityJSON;
@@ -144,8 +156,11 @@ export default {
 };
 </script>
 
-<style >
+<style scoped>
 .custom-margin {
   margin-top: 3rem;
+}
+.opet{
+ color:#005295;
 }
 </style>

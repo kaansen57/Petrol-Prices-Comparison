@@ -33,11 +33,8 @@ export default new Vuex.Store({
       if (!payload) {
         state.titlePrice = []
       } else {
-        state.titlePrice.push(payload);
+        state.titlePrice = payload;
       }
-    },
-    titlePriceSetOpet(state, payload) {
-      state.titlePrice = payload;
     },
     citySet(state, payload) {
       state.city = payload;
@@ -54,13 +51,17 @@ export default new Vuex.Store({
       };
       axios(options)
         .then((res) => {
-
-          Object.keys(res.data).forEach((key) => {
-            if (key === "AktarimTarihi") {
-            } else {
-              context.commit("titlePriceSet", { title: key, price: res.data[key] })
-            }
-          });
+          console.log(res);
+          const data = res.data;
+          const arr = [
+            { title: "V/Max Kurşunsuz 95", price: data.K95 },
+            { title: "V/Max Kurşunsuz 97", price: data.K97 },
+            { title: "V/Max EuroDiesel", price: data.Mot50 },
+            { title: "V/Pro EuroDiesel", price: data.MotPro },
+            { title: "PO/Gaz", price: data.PoGaz }
+          ];
+          console.log(arr);
+          context.commit("titlePriceSet",arr);
         })
         .catch((err) => {
           console.error("Connected Failed " + err);
@@ -81,14 +82,14 @@ export default new Vuex.Store({
             )
             .forEach((x) => {
               const arr = [
-              { title: "Kurşunsuz 95", price: x._Kursunsuz95 },
-              { title: "Motorin", price: x._Motorin },
-              { title: "Motorin Eco Force", price: x._MotorinEcoForce },
-              { title: "Fuel Oil", price: x._FuelOil },
-              { title: "Yüksek Kükürtlü Oil", price: x._YuksekKukurtluOil },
-              { title: "Gaz Yağı", price: x._GazYagi },
-              { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti }];
-              context.commit("titlePriceSetOpet", arr);
+                { title: "Kurşunsuz 95", price: x._Kursunsuz95 },
+                { title: "Motorin", price: x._Motorin },
+                { title: "Motorin Eco Force", price: x._MotorinEcoForce },
+                { title: "Fuel Oil", price: x._FuelOil },
+                { title: "Yüksek Kükürtlü Oil", price: x._YuksekKukurtluOil },
+                { title: "Gaz Yağı", price: x._GazYagi },
+                { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti }];
+              context.commit("titlePriceSet", arr);
             });
         })
         .catch((err) => {

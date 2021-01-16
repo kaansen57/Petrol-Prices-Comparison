@@ -1,6 +1,6 @@
 <template >
-    <div class="col-md-4 mt-5 ">
-      <div class="ks__card text-center p-4" v-if="selectedPetrols === 'PO'" :key="1" >
+    <div class="col-md-4 mt-5 mb-5 ">
+      <div class="ks__card text-center p-4" v-if="selectedPetrols === 'PO'"  >
         <div class="ks__card--side ks__card--front po" >
           <div class="row">
             <div class="col-md-2"></div>
@@ -8,7 +8,7 @@
               <div class="card-body">
                 <div class="card-title">
                   <h3 class="mt-5 ml-5 text-white">
-                    Yakıt Türü : <b>{{ cardData.title }}</b>
+                 <span style="color:#d3d3d3;">Yakıt Türü : </span> <b>{{ cardData.title }}</b>
                   </h3>
                 </div>
                 <h4 class="text-white">
@@ -23,14 +23,14 @@
         <div class="ks__card--side ks__card--back back-po"></div>
       </div>
 
-      <div class="ks__card text-center p-4" v-if="selectedPetrols === 'OPET'" :key="2">
+      <div class="ks__card text-center p-4" v-if="selectedPetrols === 'OPET'">
         <div class="ks__card--side ks__card--front opet">
           <div class="row">
             <div class="col-md-12 text-center">
               <div class="card-body">
                 <div class="card-title">
                   <h3 class="mt-5 ml-5 text-white">
-                    Yakıt Türü : <b>{{ cardData.title }}</b>
+                    <span style="color:#f0cd09;">Yakıt Türü : </span>  <b>{{ cardData.title }}</b>
                   </h3>
                 </div>
                 <h4 class="text-white">
@@ -49,6 +49,7 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
+
 export default {
   name: "Card",
   props: ["cardData" ],
@@ -58,11 +59,8 @@ export default {
   computed:{
     ...mapGetters([
         'titlePrices',
-        'selectedPetrols',
-        'citys',
-        'districts'
-    ])
-  }
+        'selectedPetrols'])
+  },
 };
 </script>
 

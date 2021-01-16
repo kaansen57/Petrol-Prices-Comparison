@@ -1,4 +1,8 @@
-# petrol-prices-comp
+# Petrol Prices Comp
+
+### Customize configuration
+
+Please  , disable CORS in your browser.
 
 ## Project setup
 ```
@@ -15,5 +19,5 @@ npm run serve
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+
+

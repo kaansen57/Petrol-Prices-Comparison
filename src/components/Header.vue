@@ -17,7 +17,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="nav-link" href="/">Pompa Fiyatları</a>
+            <a class="nav-link" href="/">Akaryakıt Fiyatları</a>
           </li>
          
         </ul>
