@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar navbar-expand-lg navbar-dark" :class="bg" >
+    <nav class="navbar navbar-expand-lg navbar-dark" :class="bg">
       <a class="navbar-brand" href="/"> Petrol Comparison</a>
       <button
         class="navbar-toggler"
@@ -19,7 +19,6 @@
           <li class="nav-item active">
             <a class="nav-link" href="/">Akaryakıt Fiyatları</a>
           </li>
-         
         </ul>
       </div>
     </nav>
@@ -28,26 +27,26 @@
 
 <script>
 export default {
-  props:["petrol"],
-  data(){
-    return{
-      bg : "bg-dark",
-    }
+  props: ["petrol"],
+  data() {
+    return {
+      bg: "bg-dark",
+    };
   },
-  watch:{
-    petrol(newValue, oldValue){
-        if(newValue === "PO"){
-          this.bg = "bg-danger";
-        }else if(newValue === "OPET"){
-          this.bg = "opet";
-        }
-    } 
-  }
+  watch: {
+    petrol(newValue, oldValue) {
+      if (newValue === "PO") {
+        this.bg = "bg-danger";
+      } else if (newValue === "OPET") {
+        this.bg = "opet";
+      }
+    },
+  },
 };
 </script>
 
 <style scoped>
-.opet{
-  background-color:#005295;
+.opet {
+  background-color: #005295;
 }
 </style>

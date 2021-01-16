@@ -2,10 +2,10 @@
   <div>
     <Header :petrol="selectedPetrol" />
     <div class="row mx-auto">
-       <div class="col-md-12 text-center mt-4" >
-          <h1 :class="textBg"> <b> Akaryakıt Fiyat Karşılaştırması </b> </h1>
-       </div>
-     </div>
+      <div class="col-md-12 text-center mt-4">
+        <h1 :class="textBg"><b> Akaryakıt Fiyat Karşılaştırması </b></h1>
+      </div>
+    </div>
     <div class="row mx-auto">
       <div class="col-md-4 custom-margin">
         <div class="input-group">
@@ -26,7 +26,7 @@
         <select class="custom-select" id="input2" v-model="selectedDistrict">
           <option selected disabled>Seçiniz</option>
           <option
-            :value="ilce.toUpperCase()"
+            :value="ilce"
             v-for="(ilce, i) in districts"
             :key="i"
             selected
@@ -47,16 +47,13 @@
       enter-active-class="animate__animated animate__bounceInLeft"
       leave-active-class="animate__animated animate__bounceOutRight"
       appear
-      
     >
-   
       <Card
         class="float-left"
         :cardData="item"
         v-for="(item, i) in titlePrices"
-        :key="i"
+        :key="cardKey[i]"
       ></Card>
-   
     </transition-group>
   </div>
 </template>
@@ -77,13 +74,13 @@ export default {
       selectedDistrict: "Seçiniz",
       cityNo: -1,
       districts: [],
-      textBg:"text-dark"
+      textBg: "text-dark",
+      cardKey : [1,2,3,4,5,6,7,8,9]
     };
   },
   components: {
     Header,
     Card,
- 
   },
   methods: {
     ilId(event) {
@@ -107,16 +104,23 @@ export default {
         .replace(/ö/gim, "o")
         .replace(/ç/gim, "c");
     },
-    poVuexConfig(){
-      this.$store.commit("citySet", this.turkishToEnglish(this.iller[this.cityNo].il.toUpperCase()));
-        this.$store.commit("districtSet", this.turkishToEnglish(this.selectedDistrict.toUpperCase()));
-        this.$store.dispatch("petrolOfisiAction");
+    poVuexConfig() {
+      this.$store.commit(
+        "citySet",
+        this.turkishToEnglish(this.iller[this.cityNo].il.toUpperCase())
+      );
+      this.$store.commit(
+        "districtSet",
+        this.turkishToEnglish(this.selectedDistrict.toUpperCase())
+      );
+      this.$store.dispatch("petrolOfisiAction");
     },
-    opetVuexConfig(){
-       this.$store.commit("citySet", this.iller[this.cityNo].il.toUpperCase());
-        this.$store.commit("districtSet", this.selectedDistrict.toUpperCase());
-        this.$store.dispatch("opet");
-    }
+    opetVuexConfig() {
+      this.$store.commit("citySet", this.iller[this.cityNo].il);
+      this.$store.commit("districtSet", this.selectedDistrict.toUpperCase());
+      
+      this.$store.dispatch("opet");
+    },
   },
   computed: {
     ...mapGetters(["titlePrices", "selectedPetrols"]),
@@ -138,17 +142,15 @@ export default {
       this.$store.commit("selectedPetrolSet", newValue);
 
       if (newValue === "PO") {
-        this.textBg = "text-danger"
+        this.textBg = "text-danger";
         setTimeout(() => {
-           this.poVuexConfig();
-        },700);
-        
+          this.poVuexConfig();
+        }, 700);
       } else if (newValue === "OPET") {
-         this.textBg = "opet"
+        this.textBg = "opet";
         this.opetVuexConfig();
       }
     },
-  
   },
   created() {
     this.iller = cityJSON;
@@ -160,7 +162,7 @@ export default {
 .custom-margin {
   margin-top: 3rem;
 }
-.opet{
- color:#005295;
+.opet {
+  color: #005295;
 }
 </style>
