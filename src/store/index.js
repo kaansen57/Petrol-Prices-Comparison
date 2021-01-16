@@ -9,7 +9,7 @@ export default new Vuex.Store({
     selectedPetrol: "Seçiniz",
     titlePrice: [],
     city: "",
-    district: ""
+    district: "",
   },
   getters: {
     selectedPetrols(state) {
@@ -36,12 +36,15 @@ export default new Vuex.Store({
         state.titlePrice.push(payload);
       }
     },
+    titlePriceSetOpet(state, payload) {
+      state.titlePrice = payload;
+    },
     citySet(state, payload) {
       state.city = payload;
     },
     districtSet(state, payload) {
       state.district = payload;
-    }
+    },
   },
   actions: {
     petrolOfisiAction(context) {
@@ -51,7 +54,7 @@ export default new Vuex.Store({
       };
       axios(options)
         .then((res) => {
-          console.log(res)
+
           Object.keys(res.data).forEach((key) => {
             if (key === "AktarimTarihi") {
             } else {
@@ -63,8 +66,34 @@ export default new Vuex.Store({
           console.error("Connected Failed " + err);
         });
     },
-    opet() {
-
+    opet(context) {
+      const options = {
+        url: `https://www.opet.com.tr/AjaxProcess/GetFuelPricesList?Cityname=${context.state.city}`,
+        method: "POST",
+      };
+      axios(options)
+        .then((res) => {
+          console.log(res);
+          console.log(context.state.district)
+          res.data.data
+            .filter((district) =>
+              district._IlceAd.includes(context.state.district)
+            )
+            .forEach((x) => {
+              const arr = [
+              { title: "Kurşunsuz 95", price: x._Kursunsuz95 },
+              { title: "Motorin", price: x._Motorin },
+              { title: "Motorin Eco Force", price: x._MotorinEcoForce },
+              { title: "Fuel Oil", price: x._FuelOil },
+              { title: "Yüksek Kükürtlü Oil", price: x._YuksekKukurtluOil },
+              { title: "Gaz Yağı", price: x._GazYagi },
+              { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti }];
+              context.commit("titlePriceSetOpet", arr);
+            });
+        })
+        .catch((err) => {
+          console.log("Connected Failed " + err);
+        });
     }
   }
 })

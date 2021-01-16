@@ -38,22 +38,25 @@
         </select>
       </div>
     </div>
-      <Card ></Card>
-
-      <!-- <Card
+    <transition-group
+      enter-active-class="animate__animated animate__bounceInLeft"
+      leave-active-class="animate__animated animate__bounceOutRight"
+      appear
+    >
+      <Card
         class="float-left"
         :cardData="item"
-         v-for="(item, i) in titlePrices"
+        v-for="(item, i) in titlePrices"
         :key="i"
-      ></Card> -->
-
+      ></Card>
+    </transition-group>
   </div>
 </template>
 
 <script>
 import cityJSON from "@/il-ilce.json";
 import axios from "axios";
-import {mapGetters} from 'vuex'
+import { mapGetters } from "vuex";
 import Header from "@/components/Header";
 import Card from "@/components/Card";
 
@@ -98,8 +101,8 @@ export default {
         .replace(/ç/gim, "c");
     },
   },
-  computed:{
-    ...mapGetters(['titlePrices','selectedPetrols'])
+  computed: {
+    ...mapGetters(["titlePrices", "selectedPetrols"]),
   },
   watch: {
     cityNo(newValue, oldValue) {
@@ -114,60 +117,24 @@ export default {
       this.selectedPetrol = "Seçiniz";
     },
     selectedPetrol(newValue, oldValue) {
-
-      this.$store.commit('titlePriceSet',false) //cardDatasını temizlemek için mutationa false gönder.
-      this.$store.commit("selectedPetrolSet",newValue)
+      this.$store.commit("titlePriceSet", false); //cardDatasını temizlemek için mutationa false gönder.
+      this.$store.commit("selectedPetrolSet", newValue);
 
       if (newValue === "PO") {
-          this.$store.commit("citySet",this.turkishToEnglish(this.iller[this.cityNo].il.toUpperCase()));
-          this.$store.commit("districtSet",this.turkishToEnglish(this.selectedDistrict.toUpperCase()));
-          this.$store.dispatch("petrolOfisiAction")
-      } 
-      else if (newValue === "OPET") {
-        const options = {
-          url: `https://www.opet.com.tr/AjaxProcess/GetFuelPricesList?Cityname=${this.iller[
-            this.cityNo
-          ].il.toUpperCase()}`,
-          method: "POST",
-        };
-        axios(options)
-          .then((res) => {
-            console.log(res);
-
-            res.data.data
-              .filter((district) =>
-                district._IlceAd.includes(this.selectedDistrict.toUpperCase())
-              )
-              .forEach((x) => {
-                this.$store.commit("titlePriceSet",
-                    { title: "Kurşunsuz 95", price: x._Kursunsuz95 },
-                    { title: "Motorin", price: x._Motorin },
-                    { title: "Motorin Eco Force", price: x._MotorinEcoForce },
-                    { title: "Fuel Oil", price: x._FuelOil },
-                    {
-                      title: "Yüksek Kükürtlü Oil",
-                      price: x._YuksekKukurtluOil,
-                    },
-                    { title: "Gaz Yağı", price: x._GazYagi },
-                    { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti })
-
-                  // this.titlePrice.push( { title: "Kurşunsuz 95", price: x._Kursunsuz95 },
-                  //   { title: "Motorin", price: x._Motorin },
-                  //   { title: "Motorin Eco Force", price: x._MotorinEcoForce },
-                  //   { title: "Fuel Oil", price: x._FuelOil },
-                  //   {
-                  //     title: "Yüksek Kükürtlü Oil",
-                  //     price: x._YuksekKukurtluOil,
-                  //   },
-                  //   { title: "Gaz Yağı", price: x._GazYagi },
-                  //   { title: "Kalorifer Yakıtı", price: x._KaloriferYakiti } );
-                  
-                  
-              });
-          })
-          .catch((err) => {
-            console.log("Connected Failed");
-          });
+        this.$store.commit(
+          "citySet",
+          this.turkishToEnglish(this.iller[this.cityNo].il.toUpperCase())
+        );
+        this.$store.commit(
+          "districtSet",
+          this.turkishToEnglish(this.selectedDistrict.toUpperCase())
+        );
+        this.$store.dispatch("petrolOfisiAction");
+      } else if (newValue === "OPET") {
+        console.log("opetegirdi");
+        this.$store.commit("citySet", this.iller[this.cityNo].il.toUpperCase());
+        this.$store.commit("districtSet", this.selectedDistrict.toUpperCase());
+        this.$store.dispatch("opet");
       }
     },
   },
