@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 
+
 const state = {
     selectedPetrol: "Seçiniz",
     titlePrice: [],
     city: "",
     district: "",
+    districts : []
 }
 
 const getters = {
@@ -19,8 +21,11 @@ const getters = {
         return state.city;
     },
     districts(state) {
-        return state.districts;
+        return state.district;
     },
+    arrDistricts(state){
+        return state.districts;
+    }
 }
 
 const mutations = {
@@ -40,12 +45,51 @@ const mutations = {
     districtSet(state, payload) {
         state.district = payload;
     },
+    arrDistrictSet(state, payload) {
+        if(!payload){
+            state.districts = []
+        }else{
+            state.districts.push(payload);
+        }
+            
+    },
 }
-
 const actions = {
+    opetDistrict(context){
+        const options = {
+            url: `https://www.opet.com.tr/AjaxProcess/GetFuelPricesList?Cityname=${context.getters.citys}`,
+            method: "POST",
+        };
+        axios(options)
+            .then((res) => {
+                res.data.data
+                    .forEach((x) => {
+                        context.commit("arrDistrictSet",x._IlceAd);
+                     });
+            })
+            .catch((err) => {
+                console.error("Connected Failed " + err);
+            });
+    },
+    petrolOfisiDistrict(context){
+        const options = {
+            url :`https://www.petrolofisi.com.tr/posvc/fiyat/ililce?il=${context.getters.citys}`,
+            method:"GET"
+        };
+        axios(options)
+        .then((res) =>{
+            res.data.Ilceler.forEach((x) =>{
+                context.commit("arrDistrictSet",x);
+            })
+            
+        })
+        .catch((err) =>{
+            console.error(err);
+        })
+    },
     petrolOfisiAction(context) {
         const options = {
-            url: `https://www.petrolofisi.com.tr/posvc/fiyat/guncel?il=${context.state.city}&Ilce=${context.state.district}`,
+            url: `https://www.petrolofisi.com.tr/posvc/fiyat/guncel?il=${context.getters.citys}&Ilce=${context.getters.districts}`,
             method: "GET",
         };
         axios(options)
@@ -58,23 +102,22 @@ const actions = {
                     { title: "V/Pro EuroDiesel", price: data.MotPro },
                     { title: "PO/Gaz", price: data.PoGaz }
                 ];
-
                 context.commit("titlePriceSet", arr);
             })
             .catch((err) => {
-                console.error("Connected Failed " + err);
+                console.error(err);
             });
     },
     opet(context) {
         const options = {
-            url: `https://www.opet.com.tr/AjaxProcess/GetFuelPricesList?Cityname=${context.state.city}`,
+            url: `https://www.opet.com.tr/AjaxProcess/GetFuelPricesList?Cityname=${context.getters.citys}`,
             method: "POST",
         };
         axios(options)
             .then((res) => {
                 res.data.data
                     .filter((district) =>
-                        district._IlceAd.includes(context.state.district)
+                        district._IlceAd.includes(context.getters.districts)
                     )
                     .forEach((x) => {
                         const arr = [
@@ -89,7 +132,7 @@ const actions = {
                     });
             })
             .catch((err) => {
-                console.error("Connected Failed " + err);
+                console.error(err);
             });
     }
 }

@@ -3,10 +3,17 @@
     <Header :petrol="selectedPetrol" />
     <div class="row mx-auto">
       <div class="col-md-12 text-center mt-4">
-        <h1 :class="textBg"><b> Akaryakıt Fiyat Karşılaştırması </b></h1>
+        <h1 :class="textBg"><b> Akaryakıt Fiyat Karşılaştırması</b></h1>
       </div>
     </div>
     <div class="row mx-auto">
+      <div class="col-md-3 custom-margin">
+        <select class="custom-select" id="input2" v-model="selectedPetrol">
+          <option selected disabled>Seçiniz</option>
+          <option value="PO">Petrol Ofisi</option>
+          <option value="OPET">Opet</option>
+        </select>
+      </div>
       <div class="col-md-4 custom-margin">
         <div class="input-group">
           <select
@@ -22,7 +29,7 @@
           </select>
         </div>
       </div>
-      <div class="col-md-4 custom-margin">
+      <div class="col-md-3 custom-margin">
         <select class="custom-select" id="input2" v-model="selectedDistrict">
           <option selected disabled>Seçiniz</option>
           <option
@@ -35,12 +42,20 @@
           </option>
         </select>
       </div>
-      <div class="col-md-4 custom-margin">
-        <select class="custom-select" id="input2" v-model="selectedPetrol">
-          <option selected disabled>Seçiniz</option>
-          <option value="PO">Petrol Ofisi</option>
-          <option value="OPET">Opet</option>
-        </select>
+      <div class="col-md-2 custom-margin">
+        <transition
+          enter-active-class="animate__animated animate__bounceIn"
+          leave-active-class="animate__animated animate__bounceOut"
+        >
+          <button
+            class="btn col-md-9"
+            :class="btnBg"
+            v-if="selectedDistrict !== 'Seçiniz'"
+            @click="pricesGet"
+          >
+            Fiyatları Getir
+          </button>
+        </transition>
       </div>
     </div>
     <transition-group
@@ -75,7 +90,8 @@ export default {
       cityNo: -1,
       districts: [],
       textBg: "text-dark",
-      cardKey : [1,2,3,4,5,6,7,8,9]
+      btnBg: "btn-dark",
+      cardKey: [1, 2, 3, 4, 5, 6, 7, 8, 9],
     };
   },
   components: {
@@ -118,43 +134,59 @@ export default {
     opetVuexConfig() {
       this.$store.commit("citySet", this.iller[this.cityNo].il);
       this.$store.commit("districtSet", this.selectedDistrict.toUpperCase());
-      
+
       this.$store.dispatch("opet");
     },
-  },
-  computed: {
-    ...mapGetters(["titlePrices", "selectedPetrols"]),
-  },
-  watch: {
-    cityNo(newValue, oldValue) {
-      this.selectedDistrict = "Seçiniz";
-      this.selectedPetrol = "Seçiniz";
-      this.districts = [];
-      for (let i of this.iller[newValue].ilceleri) {
-        this.districts.push(i);
-      }
-    },
-    selectedDistrict() {
-      this.selectedPetrol = "Seçiniz";
-    },
-    selectedPetrol(newValue) {
-      this.$store.commit("titlePriceSet", false); //cardDatasını temizlemek için mutationa false gönder.
-      this.$store.commit("selectedPetrolSet", newValue);
-
-      if (newValue === "PO") {
-        this.textBg = "text-danger";
-        setTimeout(() => {
-          this.poVuexConfig();
-        }, 700);
-      } else if (newValue === "OPET") {
-        this.textBg = "opet";
+    pricesGet() {
+      if (this.selectedPetrols === "PO") {
+        this.poVuexConfig();
+      } else if (this.selectedPetrols === "OPET") {
         this.opetVuexConfig();
       }
     },
   },
-  created() {
-    this.iller = cityJSON;
+  computed: {
+    ...mapGetters(["titlePrices", "selectedPetrols", "arrDistricts", "citys"]),
   },
+  watch: {
+    cityNo(newValue, oldValue) {
+      this.$store.commit("arrDistrictSet", false); // ilçeleri statede temizle temizle
+      this.$store.commit("titlePriceSet", false);
+     
+      this.selectedDistrict = "Seçiniz";
+
+      if (this.selectedPetrols === "PO") {
+         this.$store.commit("citySet", this.turkishToEnglish(this.iller[newValue].il.toUpperCase()));
+        this.$store.dispatch("petrolOfisiDistrict");
+        this.districts = this.arrDistricts;
+      } else if (this.selectedPetrols === "OPET") {
+         this.$store.commit("citySet",this.iller[newValue].il)
+        this.$store.dispatch("opetDistrict");
+        this.districts = this.arrDistricts;
+      }
+    },
+    selectedDistrict() {
+      this.$store.commit("titlePriceSet", false);
+    },
+    selectedPetrol(newValue) {
+      this.districts = [];
+      this.selectedCity = "Seçiniz";
+      this.selectedDistrict = "Seçiniz";
+      this.iller = cityJSON;
+
+      this.$store.commit("titlePriceSet", false); //cardDatasını temizlemek için mutationa false gönder.
+      this.$store.commit("selectedPetrolSet", newValue);
+
+      if (newValue === "PO") {
+        this.textBg = "text-danger ";
+        this.btnBg = "btn-danger ";
+      } else if (newValue === "OPET") {
+        this.textBg = "opet";
+        this.btnBg = "opet-btn";
+      }
+    },
+  },
+  created() {},
 };
 </script>
 
@@ -164,5 +196,13 @@ export default {
 }
 .opet {
   color: #005295;
+}
+.opet-btn {
+  color: white;
+  background-color: #005295;
+}
+.opet-btn:hover {
+  color: white;
+  background-color: #01447a;
 }
 </style>

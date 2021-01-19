@@ -18,9 +18,7 @@ export default {
 };
 </script>
 <style >
-body {
-  background-color : lightgray; 
-}
+
 .container-fluid {
   padding: 0 !important;
 }
