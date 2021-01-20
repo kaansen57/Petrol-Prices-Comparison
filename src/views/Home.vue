@@ -3,15 +3,21 @@
     <Header :petrol="selectedPetrol" />
     <div class="row mx-auto">
       <div class="col-md-12 text-center mt-4">
-        <h1 :class="textBg"><b> Akaryakıt Fiyat Karşılaştırması</b></h1>
+        <h1 :class="textBg"><b> Akaryakıt Fiyat Karşılaştırması </b></h1>
       </div>
     </div>
     <div class="row mx-auto">
       <div class="col-md-3 custom-margin">
         <select class="custom-select" id="input2" v-model="selectedPetrol">
           <option selected disabled>Seçiniz</option>
-          <option value="PO">Petrol Ofisi</option>
-          <option value="OPET">Opet</option>
+          <option
+            selected
+            v-for="(item, i) in petrolList"
+            :value="item.value"
+            :key="i"
+          >
+            {{ item.name | upperCase }}
+          </option>
         </select>
       </div>
       <div class="col-md-4 custom-margin">
@@ -24,17 +30,17 @@
           >
             <option selected disabled>Seçiniz</option>
             <option :value="i" v-for="(il, i) in iller" :key="i" selected>
-              {{ il.il }}
+              {{ il.il | upperCase }}
             </option>
           </select>
         </div>
       </div>
       <div class="col-md-3 custom-margin">
-        <select class="custom-select" id="input2" v-model="selectedDistrict">
+        <select class="custom-select" id="input2" v-model="selectedDistrict"  :disabled="arrDistricts.length < 1" >
           <option selected disabled>Seçiniz</option>
           <option
             :value="ilce"
-            v-for="(ilce, i) in districts"
+            v-for="(ilce, i) in arrDistricts"
             :key="i"
             selected
           >
@@ -84,6 +90,10 @@ export default {
   data() {
     return {
       iller: [],
+      petrolList: [
+        { value: "PO", name: "Petrol Ofisi" },
+        { value: "OPET", name: "Opet" },
+      ],
       selectedCity: "Seçiniz",
       selectedPetrol: "Seçiniz",
       selectedDistrict: "Seçiniz",
@@ -146,36 +156,37 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["titlePrices", "selectedPetrols", "arrDistricts", "citys"]),
+    ...mapGetters(["titlePrices", "selectedPetrols", "arrDistricts"]),
   },
   watch: {
     cityNo(newValue, oldValue) {
       this.$store.commit("arrDistrictSet", false); // ilçeleri statede temizle temizle
       this.$store.commit("titlePriceSet", false);
-     
+
       this.selectedDistrict = "Seçiniz";
 
       if (this.selectedPetrols === "PO") {
-         this.$store.commit("citySet", this.turkishToEnglish(this.iller[newValue].il.toUpperCase()));
+        this.$store.commit(
+          "citySet",
+          this.turkishToEnglish(this.iller[newValue].il.toUpperCase())
+        );
         this.$store.dispatch("petrolOfisiDistrict");
-        this.districts = this.arrDistricts;
       } else if (this.selectedPetrols === "OPET") {
-         this.$store.commit("citySet",this.iller[newValue].il)
+        this.$store.commit("citySet", this.iller[newValue].il);
         this.$store.dispatch("opetDistrict");
-        this.districts = this.arrDistricts;
       }
     },
     selectedDistrict() {
       this.$store.commit("titlePriceSet", false);
     },
     selectedPetrol(newValue) {
-      this.districts = [];
+   
+      this.$store.commit("arrDistrictSet", false); 
+      this.$store.commit("titlePriceSet", false);   //cardDatasını temizlemek için mutationa false gönder.
+      this.$store.commit("selectedPetrolSet", newValue);
       this.selectedCity = "Seçiniz";
       this.selectedDistrict = "Seçiniz";
       this.iller = cityJSON;
-
-      this.$store.commit("titlePriceSet", false); //cardDatasını temizlemek için mutationa false gönder.
-      this.$store.commit("selectedPetrolSet", newValue);
 
       if (newValue === "PO") {
         this.textBg = "text-danger ";
@@ -186,7 +197,11 @@ export default {
       }
     },
   },
-  created() {},
+  filters: {
+    upperCase(value) {
+      return value.toUpperCase();
+    },
+  },
 };
 </script>
 

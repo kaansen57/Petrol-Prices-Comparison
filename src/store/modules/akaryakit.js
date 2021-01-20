@@ -7,7 +7,7 @@ const state = {
     titlePrice: [],
     city: "",
     district: "",
-    districts : []
+    districts: []
 }
 
 const getters = {
@@ -20,10 +20,10 @@ const getters = {
     citys(state) {
         return state.city;
     },
-    districts(state) {
+    districtsGet(state) {
         return state.district;
     },
-    arrDistricts(state){
+    arrDistricts(state) {
         return state.districts;
     }
 }
@@ -40,22 +40,25 @@ const mutations = {
         }
     },
     citySet(state, payload) {
-        state.city = payload;
+        if (state.selectedPetrol === "PO" && payload === "AFYONKARAHISAR") {
+            state.city = "AFYON";
+        } else {
+            state.city = payload;
+        }
     },
     districtSet(state, payload) {
         state.district = payload;
     },
     arrDistrictSet(state, payload) {
-        if(!payload){
+        if (!payload) {
             state.districts = []
-        }else{
+        } else {
             state.districts.push(payload);
         }
-            
     },
 }
 const actions = {
-    opetDistrict(context){
+    opetDistrict(context) {
         const options = {
             url: `https://www.opet.com.tr/AjaxProcess/GetFuelPricesList?Cityname=${context.getters.citys}`,
             method: "POST",
@@ -64,32 +67,31 @@ const actions = {
             .then((res) => {
                 res.data.data
                     .forEach((x) => {
-                        context.commit("arrDistrictSet",x._IlceAd);
-                     });
+                        context.commit("arrDistrictSet", x._IlceAd);
+                    });
             })
             .catch((err) => {
                 console.error("Connected Failed " + err);
             });
     },
-    petrolOfisiDistrict(context){
+    petrolOfisiDistrict(context) {
         const options = {
-            url :`https://www.petrolofisi.com.tr/posvc/fiyat/ililce?il=${context.getters.citys}`,
-            method:"GET"
+            url: `https://www.petrolofisi.com.tr/posvc/fiyat/ililce?il=${context.getters.citys}`,
+            method: "GET"
         };
         axios(options)
-        .then((res) =>{
-            res.data.Ilceler.forEach((x) =>{
-                context.commit("arrDistrictSet",x);
+            .then((res) => {
+                res.data.Ilceler.forEach((x) => {
+                    context.commit("arrDistrictSet", x);
+                })
             })
-            
-        })
-        .catch((err) =>{
-            console.error(err);
-        })
+            .catch((err) => {
+                console.error(err);
+            })
     },
     petrolOfisiAction(context) {
         const options = {
-            url: `https://www.petrolofisi.com.tr/posvc/fiyat/guncel?il=${context.getters.citys}&Ilce=${context.getters.districts}`,
+            url: `https://www.petrolofisi.com.tr/posvc/fiyat/guncel?il=${context.getters.citys}&Ilce=${context.getters.districtsGet}`,
             method: "GET",
         };
         axios(options)
@@ -117,7 +119,7 @@ const actions = {
             .then((res) => {
                 res.data.data
                     .filter((district) =>
-                        district._IlceAd.includes(context.getters.districts)
+                        district._IlceAd.includes(context.getters.districtsGet)
                     )
                     .forEach((x) => {
                         const arr = [
