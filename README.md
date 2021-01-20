@@ -4,6 +4,8 @@
 
 Please  , disable CORS in your browser.
 
+![petrol](https://github.com/kaansen57/Petrol-Prices-Comparison/blob/master/src/assets/petrol.gif?raw=true)
+
 ## Project setup
 ```
 npm install
