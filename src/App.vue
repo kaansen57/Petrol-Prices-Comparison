@@ -9,12 +9,11 @@ import Home from "@/views/Home";
 
 export default {
   data() {
-    return {};
+    return { };
   },
   components: {
-    Home,
-   
-  },
+    Home
+  }
 };
 </script>
 <style >

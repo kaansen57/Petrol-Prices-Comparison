@@ -1,4 +1,7 @@
 import axios from 'axios';
+const OPET_API = process.env.VUE_APP_OPET_API;
+const PO_PRICES_API  = process.env.VUE_APP_PO_PRICES_API;
+const PO_DISTRICT_API  = process.env.VUE_APP_PO_DISTRICT_API;
 
 
 
@@ -7,7 +10,7 @@ const state = {
     titlePrice: [],
     city: "",
     district: "",
-    districts: []
+    districts: [],
 }
 
 const getters = {
@@ -60,7 +63,7 @@ const mutations = {
 const actions = {
     opetDistrict(context) {
         const options = {
-            url: `https://www.opet.com.tr/AjaxProcess/GetFuelPricesList?Cityname=${context.getters.citys}`,
+            url: `${OPET_API + context.getters.citys}`,
             method: "POST",
         };
         axios(options)
@@ -76,7 +79,7 @@ const actions = {
     },
     petrolOfisiDistrict(context) {
         const options = {
-            url: `https://www.petrolofisi.com.tr/posvc/fiyat/ililce?il=${context.getters.citys}`,
+            url: `${PO_DISTRICT_API+context.getters.citys}`,
             method: "GET"
         };
         axios(options)
@@ -91,7 +94,7 @@ const actions = {
     },
     petrolOfisiAction(context) {
         const options = {
-            url: `https://www.petrolofisi.com.tr/posvc/fiyat/guncel?il=${context.getters.citys}&Ilce=${context.getters.districtsGet}`,
+            url: `${PO_PRICES_API+context.getters.citys}&Ilce=${context.getters.districtsGet}`,
             method: "GET",
         };
         axios(options)
@@ -112,7 +115,7 @@ const actions = {
     },
     opet(context) {
         const options = {
-            url: `https://www.opet.com.tr/AjaxProcess/GetFuelPricesList?Cityname=${context.getters.citys}`,
+            url: `${OPET_API+context.getters.citys}`,
             method: "POST",
         };
         axios(options)
